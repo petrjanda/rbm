@@ -23,7 +23,7 @@ class RBMTest extends FlatSpec with Matchers {
     )
 
     val rbm = RBMTrainer(
-      epochs = 5,
+      epochs = 10000,
       miniBatchSize = 10,
       learningRate = ConstantRate(.95)
     ).train(RBM(2, 1, conf), dataSet)
