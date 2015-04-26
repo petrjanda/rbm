@@ -25,6 +25,12 @@ Immutability - Where possible I do try to keep principles of FP and keep all dat
 trainer never modifies a net, but instead creates an instance of a new net as a result of training iteration. In general
 I would like to keep this pattern.
 
+### Usage
+
+At this stage, you should consider this as a naive implementation with very limited potential for real usage. If you're after production ready
+system, go ahead and have a play with Deeplearning4j. That said, simplicity of the solution has a benefit as you will more
+likely be able to follow key concepts of RBM in the codebase, which is very small.
+
 
 
 
