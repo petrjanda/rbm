@@ -6,8 +6,10 @@ import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 
+import scala.concurrent.{ExecutionContext, Future}
+
 object ContrastiveDivergence {
-  def diff(nn:RBM, v: INDArray, k: Int)(implicit rng:MersenneTwister) = {
+  def diff(nn:RBM, v: INDArray, k: Int)(implicit ec:ExecutionContext, rng:MersenneTwister): Future[RBMGradient] = Future {
     val gibbs = new GibbsSampler(nn)
     val inputSample = gibbs.sampleHiddenGivenVisible(v)
     
