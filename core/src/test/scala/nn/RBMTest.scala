@@ -34,6 +34,8 @@ class RBMTest extends FlatSpec with Matchers with ScalaFutures {
       learningRate = ConstantRate(.95)
     ).train(RBM(2, 1, conf), dataSet)
 
-    rbm.map(_.loss(input) should be < .01)
+    whenReady(rbm) {
+      _.loss(input) should be < .01
+    }
   }
 }
