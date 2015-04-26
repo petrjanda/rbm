@@ -12,13 +12,22 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class RBMTest extends FlatSpec with Matchers {
   it should "get reasonable loss after 10 learning iterations" in {
-    val input = Nd4j.ones(2)
+    val input = Nd4j.ones(20, 2)
     val dataSet = DataSet(input, input)
 
     implicit val rng = new MersenneTwister(123)
-    val conf = NNConf(Sigmoid, CrossEntropy)
-    val rbm = RBMTrainer(100, ConstantRate(.95)).train(RBM(2, 1, conf), dataSet)
 
-    rbm.loss(input) should equal(0.0462094668482647)
+    val conf = NNConf(
+      activation = Sigmoid,
+      loss = CrossEntropy
+    )
+
+    val rbm = RBMTrainer(
+      epochs = 5,
+      miniBatchSize = 10,
+      learningRate = ConstantRate(.95)
+    ).train(RBM(2, 1, conf), dataSet)
+
+    rbm.loss(input) should equal(0.007985375462794025)
   }
 }

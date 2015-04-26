@@ -20,7 +20,7 @@ object RBM {
   }
 }
 
-class RBM(W: INDArray, v: INDArray, h: INDArray, conf:NNConf)(implicit rng:MersenneTwister) {
+class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implicit rng:MersenneTwister) {
   lazy val numVisible = W.rows()
 
   lazy val numHidden = W.columns()

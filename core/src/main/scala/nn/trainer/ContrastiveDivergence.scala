@@ -26,10 +26,10 @@ object ContrastiveDivergence {
   }
 
   def calculateDiff(input: INDArray, hvhSample: GibbsSampler.HVHSample, inputSample: GibbsSampler.Sample): RBMGradient = {
-    val weights = input.transpose().mmul(inputSample.mean).sub(hvhSample.hvMean.transpose().mmul(hvhSample.vhSample));
-    val hBias = inputSample.sample.sub(hvhSample.hvMean)
-    val vBias = input.sub(hvhSample.vhSample)
-    
+    val weights = input.transpose().mmul(inputSample.mean).sub(hvhSample.hvMean.transpose().mmul(hvhSample.vhSample))
+    val hBias = inputSample.sample.sub(hvhSample.hvMean).mean(0)
+    val vBias = input.sub(hvhSample.vhSample).mean(0)
+
     RBMGradient(weights, vBias, hBias)
   }
 }
