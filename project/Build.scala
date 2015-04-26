@@ -29,7 +29,7 @@ object Build extends sbt.Build {
         "ch.qos.logback" % "logback-classic" % "1.1.2",
         "org.scalatest" %% "scalatest" % "2.2.4" % "test",
         "org.nd4j" % "nd4j-api"  % "0.0.3.5.5.2",
-        "org.nd4j" % "nd4j-netlib-blas" % "0.0.3.5.5.2",
+        "org.nd4j" % "nd4j-jblas" % "0.0.3.5.5.2",
         "com.typesafe" % "config" % "1.2.1"
       )
     },

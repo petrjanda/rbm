@@ -11,14 +11,13 @@ case class RBMTrainer(epochs: Int, miniBatchSize: Int, parallel: Int, learningRa
   def train(rbm: RBM, dataSet: DataSet)(implicit ec:ExecutionContext, rng:MersenneTwister): Future[RBM] = {
     val iterations = dataSet.numExamples * epochs / (miniBatchSize * parallel)
 
-    println(iterations)
-
     dataSet.miniBatches(miniBatchSize).grouped(parallel).take(iterations).zipWithIndex.foldLeft(Future { rbm }) { (rbm, i) =>
       rbm.flatMap { nn =>
         Future.sequence(i._1.map(ContrastiveDivergence.diff(nn, _, 1))).map { gradients =>
           val gradient = gradients.reduceLeft { _ avg _ }
 
-          println(s" ${i._2}, ${nn.loss(dataSet.inputs)}")
+          if(i._2 % (iterations / 100) == 0) println(s" iteration: ${i._2}, loss: ${nn.loss(dataSet.inputs)}")
+
           nn.update(gradient.rate(learningRate(i._2)))
         }
       }
