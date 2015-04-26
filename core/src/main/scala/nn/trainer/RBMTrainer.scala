@@ -7,13 +7,18 @@ import nn.RBM
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class RBMTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunction) {
+case class RBMTrainer(epochs: Int, miniBatchSize: Int, parallel: Int, learningRate:LearningFunction) {
   def train(rbm: RBM, dataSet: DataSet)(implicit ec:ExecutionContext, rng:MersenneTwister): Future[RBM] = {
-    val iterations = dataSet.numExamples * epochs / miniBatchSize
+    val iterations = dataSet.numExamples * epochs / (miniBatchSize * parallel)
 
-    dataSet.miniBatches(miniBatchSize).take(iterations).zipWithIndex.foldLeft(Future { rbm }) { (rbm, i) =>
+    println(iterations)
+
+    dataSet.miniBatches(miniBatchSize).grouped(parallel).take(iterations).zipWithIndex.foldLeft(Future { rbm }) { (rbm, i) =>
       rbm.flatMap { nn =>
-        ContrastiveDivergence.diff(nn, i._1, 1).map { gradient =>
+        Future.sequence(i._1.map(ContrastiveDivergence.diff(nn, _, 1))).map { gradients =>
+          val gradient = gradients.reduceLeft { _ avg _ }
+
+          println(s" ${i._2}, ${nn.loss(dataSet.inputs)}")
           nn.update(gradient.rate(learningRate(i._2)))
         }
       }
