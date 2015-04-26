@@ -12,13 +12,15 @@ case class RBMTrainer(epochs: Int, miniBatchSize: Int, parallel: Int, learningRa
     val iterations = dataSet.numExamples * epochs / (miniBatchSize * parallel)
 
     dataSet.miniBatches(miniBatchSize).grouped(parallel).take(iterations).zipWithIndex.foldLeft(Future { rbm }) { (rbm, i) =>
+      val batches = i._1
+      val iteration = i._2
       rbm.flatMap { nn =>
-        Future.sequence(i._1.map(ContrastiveDivergence.diff(nn, _, 1))).map { gradients =>
+        Future.sequence(batches.map(ContrastiveDivergence.diff(nn, _, 1))).map { gradients =>
           val gradient = gradients.reduceLeft { _ avg _ }
 
-          if(i._2 % (iterations / 100) == 0) println(s" iteration: ${i._2}, loss: ${nn.loss(dataSet.inputs)}")
+          if(iteration % (iterations / 100) == 0) println(s" iteration: $iteration, loss: ${nn.loss(dataSet.inputs)}")
 
-          nn.update(gradient.rate(learningRate(i._2)))
+          nn.update(gradient.rate(learningRate(iteration)))
         }
       }
     }
