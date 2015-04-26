@@ -10,6 +10,9 @@ import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.factory.Nd4j
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
+
 class RBMTest extends FlatSpec with Matchers {
   it should "get reasonable loss after 10 learning iterations" in {
     val input = Nd4j.ones(20, 2)
@@ -28,6 +31,8 @@ class RBMTest extends FlatSpec with Matchers {
       learningRate = ConstantRate(.95)
     ).train(RBM(2, 1, conf), dataSet)
 
-    rbm.loss(input) should equal(0.007985375462794025)
+    rbm.map { nn =>
+      nn.loss(input) should equal(0.007985375462794025)
+    }
   }
 }
