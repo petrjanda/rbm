@@ -28,6 +28,6 @@ class RBMTest extends FlatSpec with Matchers {
       learningRate = ConstantRate(.95)
     ).train(RBM(2, 1, conf), dataSet)
 
-    rbm.loss(input) should equal(0.007985375462794025)
+    rbm.loss(input) should be < 0.01
   }
 }
