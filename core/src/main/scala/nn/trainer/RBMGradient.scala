@@ -3,5 +3,5 @@ package nn.trainer
 import org.nd4j.linalg.api.ndarray.INDArray
 
 case class RBMGradient(W: INDArray, v: INDArray, h: INDArray) {
-  def rate(r: Double) = RBMGradient(W.mul(r), v.mul(r), h.mul(r))
+  def rate[T](r: Double) = RBMGradient(W.mul(r), v.mul(r), h.mul(r)).asInstanceOf[T]
 }

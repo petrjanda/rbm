@@ -1,19 +1,12 @@
 package nn.trainer
 
 import com.typesafe.scalalogging.Logger
-import nn.ds.DataSet
+import nn.RBM
 import nn.fn.learn.LearningFunction
 import org.apache.commons.math3.random.MersenneTwister
-import nn.RBM
+import org.nd4j.linalg.api.ndarray.INDArray
 
-case class RBMTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunction) {
-  def train(rbm: RBM, dataSet: DataSet)(implicit log:Logger, rng:MersenneTwister): RBM = {
-    val iterations = dataSet.numExamples * epochs / miniBatchSize
-
-    dataSet.miniBatches(miniBatchSize).take(iterations).zipWithIndex.foldLeft(rbm) { (rbm, i) =>
-      log.info(s" ${i._2}, ${rbm.loss(dataSet.inputs)}")
-
-      rbm.update(ContrastiveDivergence.diff(rbm, i._1, 1).rate(learningRate(i._2)))
-    }
-  }
+case class RBMTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunction) extends Trainer[RBM, RBMGradient](epochs, miniBatchSize, learningRate) {
+  def train(rbm: RBM, inputs: INDArray)(implicit log:Logger, rng:MersenneTwister) =
+    ContrastiveDivergence.diff(rbm, inputs, 1)
 }
