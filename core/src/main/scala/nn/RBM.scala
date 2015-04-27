@@ -32,7 +32,7 @@ class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implic
    * @return The loss coeficient
    */
   def loss(x: INDArray): Double =
-    math.abs(conf.loss(x, reconstruct(x), conf.lossReguralizer.l2, conf.lossReguralizer.use))
+    math.abs(conf.loss(x, reconstruct(x)))
 
   /**
    * Reconstruct the given input.
