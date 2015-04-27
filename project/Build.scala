@@ -37,6 +37,7 @@ object Build extends sbt.Build {
     autoCompilerPlugins := true,
     /* Testing */
     testOptions in Test += Tests.Argument("-oDF"),
+
     parallelExecution in Test := false
   )
 
