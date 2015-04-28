@@ -14,8 +14,8 @@ object ContrastiveDivergence {
     val hvhSample = Range(0, k).foldLeft(
       GibbsSampler.HVHSample(
         GibbsSampler.Sample(
-          Nd4j.zeros(input.rows, nn.numVisible),
-          Nd4j.zeros(input.rows, nn.numHidden)
+          Nd4j.zeros(input.rows, nn.numInputs),
+          Nd4j.zeros(input.rows, nn.numOutputs)
         ), inputSample
       )
     ) ( (old, _) => {

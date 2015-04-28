@@ -1,7 +1,6 @@
 package nn
 
 import com.typesafe._
-import nn.conf.NNConf
 import nn.ds.DataSet
 import nn.fn.act.Sigmoid
 import nn.fn.learn.ConstantRate
@@ -17,11 +16,6 @@ class RBMTest extends FlatSpec with Matchers {
   
   implicit val rng = new MersenneTwister(123)
 
-  val conf = NNConf(
-    activation = Sigmoid,
-    loss = CrossEntropy
-  )
-
   val trainer = RBMTrainer(
     epochs = 10,
     miniBatchSize = 10,
@@ -31,7 +25,8 @@ class RBMTest extends FlatSpec with Matchers {
   it should "get reasonable loss after 10 learning iterations with ones as targets" in {
     val input = Nd4j.ones(20, 2)
     val dataSet = DataSet(input, input)
-    val rbm = trainer.train(RBM(2, 1, conf), dataSet)
+    val layer = MultiLayerRBM(2, List((1, Sigmoid)), CrossEntropy).layers.head
+    val rbm = trainer.train(layer, dataSet)
 
     rbm.loss(input) should be < 0.01
   }
@@ -39,7 +34,8 @@ class RBMTest extends FlatSpec with Matchers {
   it should "get reasonable loss after 10 learning iterations with zeros as targets" in {
     val input = Nd4j.zeros(20, 2)
     val dataSet = DataSet(input, input)
-    val rbm = trainer.train(RBM(2, 1, conf), dataSet)
+    val layer = MultiLayerRBM(2, List((1, Sigmoid)), CrossEntropy).layers.head
+    val rbm = trainer.train(layer, dataSet)
 
     rbm.loss(input) should be < 0.01
   }

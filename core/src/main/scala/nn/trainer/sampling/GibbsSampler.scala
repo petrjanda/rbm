@@ -15,7 +15,7 @@ object GibbsSampler {
 }
 
 class GibbsSampler(rbm:RBM)(implicit rng:MersenneTwister) {
-  import GibbsSampler._
+  import nn.trainer.sampling.GibbsSampler._
 
   def sampleHiddenGivenVisible(v: INDArray) = {
     val mean = rbm.propUp(v)
