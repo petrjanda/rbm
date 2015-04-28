@@ -1,29 +1,35 @@
 package nn
 
-import _root_.nn.conf.NNConf
-import _root_.nn.fn.act.ActivationFunction
-import _root_.nn.fn.loss.LossFunction
-import nn.fn.learn.LearningFunction
-import nn.trainer.{ContrastiveDivergence, RBMGradient}
+import nn.fn.act.ActivationFunction
+import nn.fn.loss.LossFunction
+import nn.trainer.RBMGradient
 import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.sampling.Sampling._
 
 object RBM {
-  def apply(numVisible: Int, numHidden: Int, conf:NNConf)(implicit rng:MersenneTwister): RBM = {
+  def apply(numVisible: Int, numHidden: Int, activation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) = {
+    val W = normal(rng, Nd4j.zeros(numVisible, numHidden), .5)
     val v = Nd4j.zeros(numVisible)
     val h = Nd4j.zeros(numHidden)
-    val W = normal(rng, Nd4j.zeros(numVisible, numHidden), .5)
 
-    new RBM(W, v, h, conf)
+    new RBM(W, v, h, activation, loss)
   }
+
+  def apply(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) =
+    new RBM(W, v, h, activation, loss)
 }
 
-class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implicit rng:MersenneTwister) {
-  lazy val numVisible = W.rows()
-
-  lazy val numHidden = W.columns()
+class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) extends HiddenLayer(W, h, activation, loss) {
+  /**
+   * Propagate the given hidden layer value up.
+   *
+   * @param x
+   * @return
+   */
+  private[nn] def propDown(x: INDArray): INDArray =
+    activation(x.mmul(W.transpose).addRowVector(v))
 
   /**
    * Loss function, given the input matrix.
@@ -32,7 +38,7 @@ class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implic
    * @return The loss coeficient
    */
   def loss(x: INDArray): Double =
-    math.abs(conf.loss(x, reconstruct(x)))
+    math.abs(loss(x, reconstruct(x)))
 
   /**
    * Reconstruct the given input.
@@ -43,33 +49,8 @@ class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implic
   def reconstruct(x: INDArray): INDArray =
     propDown(propUp(x))
 
-  /**
-   * Propagate the given input down.
-   *
-   * @param x
-   * @return
-   */
-  private[nn] def propUp(x: INDArray): INDArray =
-    conf.activation(x.mmul(W).addRowVector(h))
-
-  /**
-   * Propagate the given hidden layer value up.
-   *
-   * @param x
-   * @return
-   */
-  private[nn] def propDown(x: INDArray): INDArray =
-    conf.activation(x.mmul(W.transpose).addRowVector(v))
-
-  /**
-   * Update the RBM weights. As its immutable, it creates a new version of RBM with
-   * new weights.
-   *
-   * @param grad RBM weight gradients
-   * @return New RBM with updated weights
-   */
   private[nn] def update(grad:RBMGradient) =
-    new RBM(W.add(grad.W), v.add(grad.v), h.add(grad.h), conf)
+    new RBM(W.add(grad.W), v.add(grad.v), h.add(grad.h), activation, loss)
 
   override def toString =
     s"RBM(W:$W, v:$v, h:$h)"

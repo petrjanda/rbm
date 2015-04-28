@@ -1,10 +1,10 @@
 package nn.trainer
 
 import com.typesafe.scalalogging.Logger
+import nn.RBM
 import nn.ds.DataSet
 import nn.fn.learn.LearningFunction
 import org.apache.commons.math3.random.MersenneTwister
-import nn.RBM
 
 case class RBMTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunction) {
   def train(rbm: RBM, dataSet: DataSet)(implicit log:Logger, rng:MersenneTwister): RBM = {
