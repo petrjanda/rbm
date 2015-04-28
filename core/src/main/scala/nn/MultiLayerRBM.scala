@@ -20,7 +20,7 @@ object MultiLayerRBM {
 }
 
 
-class MultiLayerRBM(override val layers:List[RBM], val loss: LossFunction) extends MultiLayerNN(layers, loss) with Reconstruction {
+class MultiLayerRBM(override val layers:List[RBM], val loss: LossFunction) extends MultiLayerNN(layers) with Reconstruction {
   private[nn] def propDown(x: INDArray): INDArray = {
     layers.foldRight(x) {
       case (layer, x) => layer.propDown(x)

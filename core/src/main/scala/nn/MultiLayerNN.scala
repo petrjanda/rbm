@@ -3,7 +3,7 @@ package nn
 import nn.fn.loss.LossFunction
 import org.nd4j.linalg.api.ndarray.INDArray
 
-class MultiLayerNN(val layers:List[HiddenLayer], loss: LossFunction) {
+class MultiLayerNN(val layers:List[HiddenLayer]) {
   lazy val numInputs = layers.head.numInputs
 
   lazy val numOutputs = layers.last.numOutputs
