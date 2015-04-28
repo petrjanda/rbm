@@ -4,4 +4,6 @@ import org.nd4j.linalg.api.ndarray.INDArray
 
 trait ActivationFunction {
   def apply(x: INDArray): INDArray
+
+  def derivative(y: INDArray): INDArray
 }

@@ -25,6 +25,8 @@ class RBM(val W: INDArray, val v: INDArray, val h: INDArray, conf:NNConf)(implic
 
   lazy val numHidden = W.columns()
 
+  def activation = conf.activation
+
   /**
    * Loss function, given the input matrix.
    *
