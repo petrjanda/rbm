@@ -21,7 +21,7 @@ object RBM {
     new RBM(W, v, h, activation, loss)
 }
 
-class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) extends HiddenLayer(W, h, activation, loss) {
+class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, val loss: LossFunction) extends HiddenLayer(W, h, activation, loss) with Reconstruction {
   /**
    * Propagate the given hidden layer value up.
    *
@@ -30,24 +30,6 @@ class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction,
    */
   private[nn] def propDown(x: INDArray): INDArray =
     activation(x.mmul(W.transpose).addRowVector(v))
-
-  /**
-   * Loss function, given the input matrix.
-   *
-   * @param x Input matrix
-   * @return The loss coeficient
-   */
-  def loss(x: INDArray): Double =
-    math.abs(loss(x, reconstruct(x)))
-
-  /**
-   * Reconstruct the given input.
-   *
-   * @param x Input matrix to be reconstructed
-   * @return Output (reconstruction) matrix
-   */
-  def reconstruct(x: INDArray): INDArray =
-    propDown(propUp(x))
 
   private[nn] def update(grad:RBMGradient) =
     new RBM(W.add(grad.W), v.add(grad.v), h.add(grad.h), activation, loss)

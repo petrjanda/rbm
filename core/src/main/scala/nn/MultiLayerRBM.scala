@@ -19,33 +19,11 @@ object MultiLayerRBM {
   }
 }
 
-class MultiLayerRBM(val layers:List[RBM], loss: LossFunction) {
-  lazy val numInputs = layers.head.numInputs
 
-  lazy val numOutputs = layers.last.numOutputs
-
-  private[nn] def propUp(x: INDArray): INDArray = {
-    layers.foldLeft(x) {
-      case (x, layer) => layer.propUp(x)
-    }
-  }
-
+class MultiLayerRBM(override val layers:List[RBM], val loss: LossFunction) extends MultiLayerNN(layers, loss) with Reconstruction {
   private[nn] def propDown(x: INDArray): INDArray = {
     layers.foldRight(x) {
       case (layer, x) => layer.propDown(x)
     }
   }
-
-  private[nn] def reconstruct(x: INDArray): INDArray = {
-    propDown(propUp(x))
-  }
-
-  /**
-   * Loss function, given the input matrix.
-   *
-   * @param x Input matrix
-   * @return The loss coeficient
-   */
-  def loss(x: INDArray): Double =
-    math.abs(loss(x, reconstruct(x)))
 }
