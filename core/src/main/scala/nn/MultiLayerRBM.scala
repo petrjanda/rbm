@@ -13,6 +13,10 @@ object MultiLayerRBM {
 
     new MultiLayerRBM(layers, loss)
   }
+
+  def apply(layers:List[RBM], loss: LossFunction)(implicit rng:MersenneTwister) = {
+    new MultiLayerRBM(layers, loss)
+  }
 }
 
 class MultiLayerRBM(val layers:List[RBM], loss: LossFunction) {
@@ -20,8 +24,28 @@ class MultiLayerRBM(val layers:List[RBM], loss: LossFunction) {
 
   lazy val numOutputs = layers.last.numOutputs
 
-  private[nn] def propUp(x: INDArray): INDArray =
+  private[nn] def propUp(x: INDArray): INDArray = {
     layers.foldLeft(x) {
       case (x, layer) => layer.propUp(x)
     }
+  }
+
+  private[nn] def propDown(x: INDArray): INDArray = {
+    layers.foldRight(x) {
+      case (layer, x) => layer.propDown(x)
+    }
+  }
+
+  private[nn] def reconstruct(x: INDArray): INDArray = {
+    propDown(propUp(x))
+  }
+
+  /**
+   * Loss function, given the input matrix.
+   *
+   * @param x Input matrix
+   * @return The loss coeficient
+   */
+  def loss(x: INDArray): Double =
+    math.abs(loss(x, reconstruct(x)))
 }

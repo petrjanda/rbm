@@ -2,7 +2,7 @@ package nn.ds
 
 import org.nd4j.linalg.api.ndarray.INDArray
 
-case class DataSet(inputs:INDArray, labels:INDArray) {
+case class DataSet(inputs:INDArray, val labels:INDArray) {
   lazy val numExamples = inputs.rows()
 
   def miniBatches(batchSize: Int) =

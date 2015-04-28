@@ -16,7 +16,7 @@ object HiddenLayer {
   }
 }
 
-class HiddenLayer(W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) {
+class HiddenLayer(val W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) {
   lazy val numInputs = W.rows()
 
   lazy val numOutputs = W.columns()

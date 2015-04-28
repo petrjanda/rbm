@@ -16,6 +16,9 @@ object RBM {
 
     new RBM(W, v, h, activation, loss)
   }
+
+  def apply(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) =
+    new RBM(W, v, h, activation, loss)
 }
 
 class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) extends HiddenLayer(W, h, activation, loss) {
