@@ -10,9 +10,8 @@ trait Reconstruction {
 
   private[nn] def propDown(x: INDArray): INDArray
 
-  private[nn] def reconstruct(x: INDArray): INDArray = {
+  private[nn] def reconstruct(x: INDArray): INDArray =
     propDown(propUp(x))
-  }
 
   /**
    * Loss function, given the input matrix.
@@ -21,5 +20,5 @@ trait Reconstruction {
    * @return The loss coeficient
    */
   def loss(x: INDArray): Double =
-    math.abs(loss(x, reconstruct(x)))
+    loss(x, reconstruct(x))
 }

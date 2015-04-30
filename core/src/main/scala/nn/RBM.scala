@@ -9,19 +9,21 @@ import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.sampling.Sampling._
 
 object RBM {
-  def apply(numVisible: Int, numHidden: Int, activation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) = {
+  def apply(numVisible: Int, numHidden: Int, visibleActivation: ActivationFunction, hiddenActivation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) = {
     val W = normal(rng, Nd4j.zeros(numVisible, numHidden), .5)
     val v = Nd4j.zeros(numVisible)
     val h = Nd4j.zeros(numHidden)
 
-    new RBM(W, v, h, activation, loss)
+    println(W)
+
+    new RBM(W, v, h, visibleActivation, hiddenActivation, loss)
   }
 
-  def apply(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) =
-    new RBM(W, v, h, activation, loss)
+  def apply(W: INDArray, v: INDArray, h: INDArray, visibleActivation: ActivationFunction, hiddenActivation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) =
+    new RBM(W, v, h, visibleActivation, hiddenActivation, loss)
 }
 
-class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction, val loss: LossFunction) extends HiddenLayer(W, h, activation, loss) with Reconstruction {
+class RBM(W: INDArray, val v: INDArray, val h: INDArray, val visibleActivation: ActivationFunction, val hiddenActivation: ActivationFunction, val loss: LossFunction)(implicit rng:MersenneTwister) extends HiddenLayer(W, h, hiddenActivation, loss) with Reconstruction {
   /**
    * Propagate the given hidden layer value up.
    *
@@ -29,10 +31,10 @@ class RBM(W: INDArray, v: INDArray, h: INDArray, activation: ActivationFunction,
    * @return
    */
   private[nn] def propDown(x: INDArray): INDArray =
-    activation(x.mmul(W.transpose).addRowVector(v))
+    visibleActivation(x.mmul(W.transpose).addRowVector(v))
 
   private[nn] def update(grad:RBMGradient) =
-    new RBM(W.add(grad.W), v.add(grad.v), h.add(grad.h), activation, loss)
+    new RBM(W.add(grad.W), v.add(grad.v), h.add(grad.h), visibleActivation, hiddenActivation, loss)
 
   override def toString =
     s"RBM(W:$W, v:$v, h:$h)"
