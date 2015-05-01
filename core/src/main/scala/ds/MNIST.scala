@@ -55,10 +55,8 @@ object MNIST {
     var numLabelsRead = 0
     var numImagesRead = 0
 
-    //int [] label = new int[numRows];
     while (labels.available() > 0 && numLabelsRead < numLabels) {
-
-//      label.put(numImagesRead, labels.readByte().toDouble)
+      label.put(numImagesRead, 1, labels.readByte().toDouble)
 
       numLabelsRead += 1
 
@@ -69,7 +67,6 @@ object MNIST {
           temp += images.readUnsignedByte().toDouble / 255
         }
       }
-
 
       image.putColumn(numImagesRead, Nd4j.create(temp.toArray, Array(1, 784)))
       temp.clear()

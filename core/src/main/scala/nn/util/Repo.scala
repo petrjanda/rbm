@@ -21,9 +21,3 @@ class Repo(dir:String) {
     }
   }
 }
-
-object Repo {
-  trait Writable {
-
-  }
-}
