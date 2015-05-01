@@ -16,7 +16,7 @@ object HiddenLayer {
   }
 }
 
-class HiddenLayer(val W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) {
+class HiddenLayer(val W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) extends Serializable {
   lazy val numInputs = W.rows
 
   lazy val numOutputs = W.columns
