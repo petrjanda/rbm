@@ -17,7 +17,7 @@ class RBMTest extends FlatSpec with Matchers {
   implicit val rng = new MersenneTwister(123)
 
   val trainer = RBMTrainer(
-    epochs = 1,
+    epochs = 10,
     miniBatchSize = 25,
     learningRate = ConstantRate(0.05)
   )
@@ -27,12 +27,18 @@ class RBMTest extends FlatSpec with Matchers {
     val ds = DataSet(mnist._1.transpose)
 
     val l1 = trainer.train(RBM(784, 500, Sigmoid, Sigmoid, CrossEntropy), ds)
-    val l2 = trainer.train(RBM(500, 200, Sigmoid, Sigmoid, CrossEntropy), DataSet(l1.propUp(ds.inputs)))
-    val rbm = MultiLayerRBM(List(l1, l2), CrossEntropy)
 
-    val d = trainer.train(RBM(784, 200, Sigmoid, Sigmoid, CrossEntropy), ds)
+    val l2ds = DataSet(l1.propUp(ds.inputs))
+    val l2 = trainer.train(RBM(500, 200, Sigmoid, Sigmoid, CrossEntropy), l2ds)
 
-    println("rbm: " + rbm.loss(ds.inputs))
-    println("d: " + d.loss(ds.inputs))
+    val l3ds = DataSet(l2.propUp(l2ds.inputs))
+    val l3 = trainer.train(RBM(200, 50, Sigmoid, Sigmoid, CrossEntropy), l3ds)
+
+    val rbm = MultiLayerRBM(List(l1, l2, l3), CrossEntropy)
+
+    val d = trainer.train(RBM(784, 50, Sigmoid, Sigmoid, CrossEntropy), ds)
+
+    println("deep: " + rbm.loss(ds.inputs))
+    println("direct: " + d.loss(ds.inputs))
   }
 }

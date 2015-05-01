@@ -14,8 +14,6 @@ object RBM {
     val v = Nd4j.zeros(numVisible)
     val h = Nd4j.zeros(numHidden)
 
-    println(W)
-
     new RBM(W, v, h, visibleActivation, hiddenActivation, loss)
   }
 
