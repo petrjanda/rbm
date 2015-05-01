@@ -16,10 +16,10 @@ object HiddenLayer {
   }
 }
 
-class HiddenLayer(val W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction) {
-  lazy val numInputs = W.rows()
+class HiddenLayer(val W: INDArray, h: INDArray, activation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) {
+  lazy val numInputs = W.rows
 
-  lazy val numOutputs = W.columns()
+  lazy val numOutputs = W.columns
 
   /**
    * Propagate the given input down.

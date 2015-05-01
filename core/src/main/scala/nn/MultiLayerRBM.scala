@@ -6,9 +6,9 @@ import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 
 object MultiLayerRBM {
-  def apply(numVisible: Int, numHidden: List[(Int, ActivationFunction)], loss: LossFunction)(implicit rng:MersenneTwister) = {
-    val layers = numHidden.foldLeft(List(RBM(numVisible, numHidden.head._1, numHidden.head._2, loss))) { (previous, i) =>
-      previous :+ RBM(previous.last.numOutputs, i._1, i._2, loss)
+  def apply(numVisible: Int, numHidden: List[(Int, ActivationFunction, ActivationFunction)], loss: LossFunction)(implicit rng:MersenneTwister) = {
+    val layers = numHidden.foldLeft(List(RBM(numVisible, numHidden.head._1, numHidden.head._2, numHidden.head._3, loss))) { (previous, i) =>
+      previous :+ RBM(previous.last.numOutputs, i._1, i._2, i._3, loss)
     }
 
     new MultiLayerRBM(layers, loss)
