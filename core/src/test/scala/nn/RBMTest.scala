@@ -1,7 +1,6 @@
 package nn
 
 import _root_.ds.MNIST
-import com.sksamuel.scrimage.{Image, RGBColor}
 import com.typesafe._
 import nn.ds.DataSet
 import nn.fn.act.Sigmoid
@@ -9,13 +8,13 @@ import nn.fn.learn.ConstantRate
 import nn.fn.loss.CrossEntropy
 import nn.trainer.RBMTrainer
 import org.apache.commons.math3.random.MersenneTwister
-import org.nd4j.linalg.api.ndarray.INDArray
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Seconds, Span}
 import org.scalatest.{FlatSpec, Matchers}
 import org.slf4j.LoggerFactory
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import org.scalatest.time.{Seconds, Span, Units}
 
 class RBMTest extends FlatSpec with Matchers with ScalaFutures {
   implicit val logger = scalalogging.Logger(LoggerFactory.getLogger("test"))
