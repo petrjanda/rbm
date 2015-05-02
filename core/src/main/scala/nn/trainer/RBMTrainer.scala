@@ -37,7 +37,7 @@ case class RBMTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunc
     val gradients = Future.sequence(batches.map(batch => ContrastiveDivergence.diff(rbm, batch, 1)))
 
     gradients.map { gradients =>
-      gradients.reduce { (t, i) => RBMGradient(t.h.add(i.h), t.v.add(i.v), t.W.add(i.W)) }
+      gradients.reduce { (t, i) => RBMGradient(t.h.add(i.h), t.v.add(i.v), t.W.add(i.W)) }.rate(1 / batches.length)
     }
   }
 }
