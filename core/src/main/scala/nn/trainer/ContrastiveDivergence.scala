@@ -2,6 +2,7 @@ package nn.trainer
 
 import nn.RBM
 import nn.fn.act.Sigmoid
+import nn.trainer.rbm.RBMGradient
 import nn.trainer.sampling.GibbsSampler
 import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray

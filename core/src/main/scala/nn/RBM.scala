@@ -2,7 +2,7 @@ package nn
 
 import nn.fn.act.ActivationFunction
 import nn.fn.loss.LossFunction
-import nn.trainer.RBMGradient
+import nn.trainer.rbm.RBMGradient
 import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
@@ -21,7 +21,7 @@ object RBM {
     new RBM(W, v, h, visibleActivation, hiddenActivation, loss)
 }
 
-class RBM(W: INDArray, val v: INDArray, val h: INDArray, val visibleActivation: ActivationFunction, val hiddenActivation: ActivationFunction, val loss: LossFunction)(implicit rng:MersenneTwister) extends HiddenLayer(W, h, hiddenActivation, loss) with Reconstruction {
+class RBM(W: INDArray, val v: INDArray, h: INDArray, val visibleActivation: ActivationFunction, val hiddenActivation: ActivationFunction, loss: LossFunction)(implicit rng:MersenneTwister) extends HiddenLayer(W, h, hiddenActivation, loss) with Reconstruction {
   /**
    * Propagate the given hidden layer value up.
    *
