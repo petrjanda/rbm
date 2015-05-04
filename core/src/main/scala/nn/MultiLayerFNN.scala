@@ -1,10 +1,11 @@
 package nn
 
+import nn.ds.DataSet
 import nn.trainer.fnn.FNNGradient
 import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 
-class MultiLayerFNN(val layers:List[HiddenLayer]) {
+case class MultiLayerFNN(val layers:List[HiddenLayer]) {
   lazy val numInputs = layers.head.numInputs
 
   lazy val numOutputs = layers.last.numOutputs
@@ -28,6 +29,6 @@ class MultiLayerFNN(val layers:List[HiddenLayer]) {
       }
     )
 
-  def loss(x: INDArray, y: INDArray): Double =
-    loss(x, y)
+  def loss(ds: DataSet): Double =
+    layers.last.loss(propUp(ds.inputs), ds.labels)
 }

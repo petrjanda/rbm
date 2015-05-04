@@ -17,11 +17,16 @@ case class Gradients(nn:MultiLayerFNN) {
 
     val outErrorDerivative = objective.derivative(outputs.last, targets)
 
+//    println(s"outputs: $outputs")
+//    println(s"outErrorDerivative: $outErrorDerivative")
+
     derivatives(outErrorDerivative, outputs).zipWithIndex.map {
       case (derivative, i) =>
         val x = if (i > 0) outputs(i - 1) else inputs
 
-        FNNGradient(x.mmul(derivative.transpose))
+//        println(s"x.transpose.mmul(derivative): ${x.transpose.mmul(derivative)}")
+
+        FNNGradient(x.transpose.mmul(derivative))
     }
   }
 
@@ -31,6 +36,10 @@ case class Gradients(nn:MultiLayerFNN) {
         val priorDerivativeWeighted = if (i < layers.size - 1) {
           layers(i + 1).W.mmul(priorDerivative)
         } else priorDerivative
+
+//        println(s"priorDerivative: $priorDerivative")
+//        println(s"priorDerivativeWeighted: $priorDerivativeWeighted")
+//        println(s"layers(i).activation.derivative(outputs(i)).mul(priorDerivativeWeighted): ${layers(i).activation.derivative(outputs(i)).mul(priorDerivativeWeighted)}")
 
         layers(i).activation.derivative(outputs(i)).mul(priorDerivativeWeighted)
     }

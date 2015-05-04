@@ -12,9 +12,11 @@ case class FNNTrainer(epochs: Int, miniBatchSize: Int, learningRate:LearningFunc
     val iterations = dataSet.numExamples * epochs / miniBatchSize
 
     dataSet.miniBatches(miniBatchSize).take(iterations).zipWithIndex.foldLeft(fnn) { (fnn, i) =>
-      if(i._2 % 100 == 0) log.info(s"--> ${i._2}, ${fnn.loss(dataSet.inputs, dataSet.labels)}")
+      if(i._2 % 100 == 0) log.info(s"--> ${i._2}, ${fnn.loss(dataSet)}")
       
-      fnn.update(Gradients(fnn).errorGradients(i._1).map(_.rate(learningRate(i._2))))
+      fnn.update(
+        Gradients(fnn).errorGradients(i._1).map(_.rate(learningRate(i._2)))
+      )
     }
   }
 }
