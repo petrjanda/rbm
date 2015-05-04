@@ -7,7 +7,7 @@ import nn.ds.DataSet
 import nn.fn.act.Sigmoid
 import nn.fn.learn.ConstantRate
 import nn.fn.loss.CrossEntropy
-import nn.trainer.RBMTrainer
+import nn.trainer.rbm.RBMTrainer
 import org.apache.commons.math3.random.MersenneTwister
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.scalatest.{FlatSpec, Matchers}

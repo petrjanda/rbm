@@ -1,4 +1,4 @@
-package nn.trainer
+package nn.trainer.rbm
 
 import org.nd4j.linalg.api.ndarray.INDArray
 

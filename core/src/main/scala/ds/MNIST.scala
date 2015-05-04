@@ -43,7 +43,7 @@ object MNIST {
     }
 
     val image = Nd4j.create(numCols * numRows, numImages)
-    val label = Nd4j.create(1, numLabels)
+    val label = Nd4j.zeros(10, numLabels)
 
     if (numLabels != numImages) {
       System.err.println("Image file and label file do not contain the same number of entries.")
@@ -56,7 +56,7 @@ object MNIST {
     var numImagesRead = 0
 
     while (labels.available() > 0 && numLabelsRead < numLabels) {
-      label.put(numImagesRead, 1, labels.readByte().toDouble)
+      label.put(labels.readByte().toInt, numImagesRead, 1.0)
 
       numLabelsRead += 1
 
